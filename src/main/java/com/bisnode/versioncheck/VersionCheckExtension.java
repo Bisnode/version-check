@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.ArtifactRepositoryContainer;
+
+import com.bisnode.versioncheck.rules.VersionRule;
 
 public class VersionCheckExtension {
 
@@ -22,7 +25,9 @@ public class VersionCheckExtension {
     /**
      * Configuration to exclude when calculating the dependencies.
      */
-    final Set<String> includeConfigurations = new HashSet<String>();
+    private final Set<String> includeConfigurations = new HashSet<String>();
+
+    private final Set<VersionRule> versionRules = new HashSet<VersionRule>();
 
     /**
      * If dependencies from sub-projects should be included.
@@ -65,6 +70,10 @@ public class VersionCheckExtension {
             return true;
         }
         return includeConfigurations.contains(name);
+    }
+
+    public Set<VersionRule> getVersionRules() {
+        return versionRules;
     }
 
 }
