@@ -48,6 +48,8 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.TaskAction;
 
+import com.bisnode.versioncheck.rules.VersionRule;
+
 /**
  * Validates the project dependencies against the defined ruleset.
  */
@@ -77,18 +79,12 @@ public class ValidationTask extends DefaultTask {
 
         List<ModuleVersionIdentifier> allDeps = gatherDependencies(depProjects);
 
-        Map<String, String> versionGroup = new HashMap<>();
+        applyChecks(allDeps);
+    }
 
-        for (ModuleVersionIdentifier info : allDeps) {
-            String id = info.getGroup();
-            String version = versionGroup.get(id);
-            if (version == null) {
-                versionGroup.put(id, info.getVersion());
-            } else {
-                if (!version.equals(info.getVersion())) {
-                    logger.warn("Version mismatch for {}:{} vs. {}", id, version, info.getVersion());
-                }
-            }
+    private void applyChecks(List<ModuleVersionIdentifier> allDeps) {
+        for (VersionRule rule : extension.getVersionRules()) {
+            rule.apply(allDeps);
         }
     }
 

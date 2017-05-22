@@ -16,18 +16,13 @@ public class VersionCheckPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
 
-        // create extension
         project.getExtensions().create("versioncheck", VersionCheckExtension.class, project);
 
         Map<String, Object> args = new HashMap<>();
         args.put(Task.TASK_TYPE, ValidationTask.class);
-        Task jsonTask = project.task(args, "versionCheck");
-
-        jsonTask.setDescription("Generate a pom.json file with the project\"s dependencies");
-        jsonTask.setGroup("VersionCheck");
-        jsonTask.doLast((task) -> {
-            VersionCheckExtension ext = (VersionCheckExtension) project.getExtensions().getByName("versioncheck");
-        });
+        args.put(Task.TASK_GROUP, "VersionCheck");
+        args.put(Task.TASK_DESCRIPTION, "Applies the configured version checks to validate the dependency sets");
+        project.task(args, "versionCheck");
     }
 }
 
