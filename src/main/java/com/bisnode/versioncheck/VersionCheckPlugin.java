@@ -16,7 +16,7 @@ public class VersionCheckPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
 
-        project.getExtensions().create("versioncheck", VersionCheckExtension.class, project);
+        project.getExtensions().create("versionCheck", VersionCheckExtension.class, project);
 
         Map<String, Object> args = new HashMap<>();
         args.put(Task.TASK_TYPE, ValidationTask.class);

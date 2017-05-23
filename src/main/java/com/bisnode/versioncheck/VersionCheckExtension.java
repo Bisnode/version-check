@@ -2,11 +2,12 @@ package com.bisnode.versioncheck;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ArtifactRepositoryContainer;
 
+import com.bisnode.versioncheck.rules.SameVersionGroupRule;
 import com.bisnode.versioncheck.rules.VersionRule;
 
 public class VersionCheckExtension {
@@ -25,7 +26,7 @@ public class VersionCheckExtension {
     /**
      * Configuration to exclude when calculating the dependencies.
      */
-    private final Set<String> includeConfigurations = new HashSet<String>();
+    private final Set<String> configurations = new HashSet<String>();
 
     private final Set<VersionRule> versionRules = new HashSet<VersionRule>();
 
@@ -50,8 +51,9 @@ public class VersionCheckExtension {
      * Specify configurations to exclude.
      * @param configs an array of configurations
      */
-    public void include(String... configs) {
-        includeConfigurations.addAll(Arrays.asList(configs));
+    public void configurations(String... configs) {
+        configurations.clear();
+        configurations.addAll(Arrays.asList(configs));
     }
 
     public String getDependencies() {
@@ -66,14 +68,20 @@ public class VersionCheckExtension {
      * Test if the given configuration should be excluded.
      */
     boolean acceptConfiguration(String name) {
-        if (includeConfigurations.isEmpty()) {
+        if (configurations.isEmpty()) {
             return true;
         }
-        return includeConfigurations.contains(name);
+        return configurations.contains(name);
     }
 
     public Set<VersionRule> getVersionRules() {
         return versionRules;
+    }
+
+    public void setSameVersionGroups(List<String> groups) {
+        for (String group : groups) {
+            versionRules.add(new SameVersionGroupRule(group));
+        }
     }
 
 }
