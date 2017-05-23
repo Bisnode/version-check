@@ -28,17 +28,3 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = "3.5"
 }
-
-// package JavaDoc into a jar file
-task packageJavadoc(type: Jar, dependsOn: 'groovydoc') {
-    from groovydoc.destinationDir
-    classifier = 'javadoc'
-}
-
-// package source into a jar file
-task packageSources(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-
