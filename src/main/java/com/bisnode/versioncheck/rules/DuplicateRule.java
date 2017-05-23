@@ -11,12 +11,14 @@ import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
+/**
+ * Checks whether a dependency exists more than once with different versions.
+ * This usually happens only across unrelated configurations. For example, a library can appear in
+ * a custom configuration and in "testCompile".
+ */
 public class DuplicateRule implements VersionRule {
 
     private static final Logger logger = Logging.getLogger(DuplicateRule.class);
-
-    public DuplicateRule() {
-    }
 
     @Override
     public void apply(List<ModuleVersionIdentifier> allDeps) {

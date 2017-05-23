@@ -24,13 +24,9 @@
 
 package com.bisnode.versioncheck;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.gradle.api.DefaultTask;
@@ -68,7 +64,7 @@ public class ValidationTask extends DefaultTask {
 
     private static final ExternalDependencySpec EXTERNAL_DEPENDENCY = new ExternalDependencySpec();
 
-    private final VersionCheckExtension extension = (VersionCheckExtension) getProject().getExtensions().getByName("versioncheck");
+    private final VersionCheckExtension extension = (VersionCheckExtension) getProject().getExtensions().getByName("versionCheck");
 
 
     @TaskAction
@@ -136,8 +132,7 @@ public class ValidationTask extends DefaultTask {
         Set<?> deps;
 
         Project project = getProject();
-        VersionCheckExtension versioncheckExt = (VersionCheckExtension) project.getExtensions()
-                .getByName("versioncheck");
+        VersionCheckExtension versioncheckExt = (VersionCheckExtension) project.getExtensions().getByName("versionCheck");
 
         if (VersionCheckExtension.transitive.equals(versioncheckExt.getDependencies())) {
             // transitive dependencies: use all resolved artifacts
