@@ -7,21 +7,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
 /**
  * Checks whether a dependency exists more than once with different versions.
- * This usually happens only across unrelated configurations. For example, a library can appear in
- * a custom configuration and in "testCompile".
  */
 public class DuplicateRule implements VersionRule {
 
     private static final Logger logger = Logging.getLogger(DuplicateRule.class);
 
     @Override
-    public void apply(List<ModuleVersionIdentifier> allDeps) {
+    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps) {
         Map<String, Set<String>> versionGroup = new HashMap<>();
 
         for (ModuleVersionIdentifier info : allDeps) {

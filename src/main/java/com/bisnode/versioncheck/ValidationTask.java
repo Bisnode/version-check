@@ -73,32 +73,13 @@ public class ValidationTask extends DefaultTask {
         // determine projects for which to include dependencies
         Set<Project> depProjects = determineProjects();
 
-        List<ModuleVersionIdentifier> allDeps = gatherDependencies(depProjects);
-
-        applyChecks(allDeps);
-    }
-
-    private void applyChecks(List<ModuleVersionIdentifier> allDeps) {
-        for (VersionRule rule : extension.getVersionRules()) {
-            rule.apply(allDeps);
-        }
-    }
-
-    private List<ModuleVersionIdentifier> gatherDependencies(Set<Project> depProjects) {
-        List<ModuleVersionIdentifier> allDeps = new ArrayList<>();
-
-        // project dependencies
         for (Project depProject : depProjects) {
-            ConfigurationContainer configs = depProject.getConfigurations();
-            for (String name : configs.getNames()) {
-                // check if configuration should be included
-                if (extension.acceptConfiguration(name)) {
-                    Configuration cfg = configs.getByName(name);
-                    if (cfg.isCanBeResolved()) {
-                        ResolvedConfiguration config = cfg.getResolvedConfiguration();
-                         allDeps.addAll(getDependencies(name, config));
-                    }
-                }
+            logger.lifecycle("Project " + depProject);
+
+            for (Configuration config : getAcceptedConfigurations(depProject)) {
+                logger.lifecycle("+ Configuration: " + config.getName());
+                List<ModuleVersionIdentifier> dependencies = getDependencies(config.getResolvedConfiguration());
+                applyChecks(config, dependencies);
             }
         }
 
@@ -113,8 +94,28 @@ public class ValidationTask extends DefaultTask {
 //      }
 //    }
 //
+    }
 
-        return allDeps;
+    private void applyChecks(Configuration config, List<ModuleVersionIdentifier> allDeps) {
+        for (VersionRule rule : extension.getVersionRules()) {
+            rule.apply(config, allDeps);
+        }
+    }
+
+    private List<Configuration> getAcceptedConfigurations(Project depProject) {
+        ConfigurationContainer configs = depProject.getConfigurations();
+        List<Configuration> results = new ArrayList<>();
+        for (String name : configs.getNames()) {
+            // check the build settings if configuration should be included
+            if (extension.acceptConfiguration(name)) {
+                Configuration cfg = configs.getByName(name);
+                // check if the config is even resolvable for us (since gradle 3.4)
+                if (cfg.isCanBeResolved()) {
+                    results.add(cfg);
+                }
+            }
+        }
+        return results;
     }
 
     private Set<Project> determineProjects() {
@@ -128,7 +129,7 @@ public class ValidationTask extends DefaultTask {
         }
     }
 
-    private List<ModuleVersionIdentifier> getDependencies(String configName, ResolvedConfiguration resolvedConfig) {
+    private List<ModuleVersionIdentifier> getDependencies(ResolvedConfiguration resolvedConfig) {
         Set<?> deps;
 
         Project project = getProject();

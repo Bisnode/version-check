@@ -3,7 +3,9 @@ package com.bisnode.versioncheck.rules;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
+import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
@@ -27,10 +29,11 @@ public class SameVersionGroupRule implements VersionRule {
     }
 
     @Override
-    public void apply(List<ModuleVersionIdentifier> allDeps) {
+    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps) {
         String version = null;
         String firstHit = null;
         boolean writeFirstHit = true;
+
         for (ModuleVersionIdentifier info : allDeps) {
             String id = info.getGroup() + ":" + info.getName();
             if (matchPattern.matcher(id).matches()) {
@@ -40,18 +43,20 @@ public class SameVersionGroupRule implements VersionRule {
                 } else {
                     if (!version.equals(info.getVersion())) {
                         if (writeFirstHit) {
-                            logger.error("Version group mismatch for '{}'", inputPattern);
-                            logger.error("  |- '{}:{}'", firstHit, version);
+                            logger.warn("Version group mismatch for '{}'", inputPattern);
+                            logger.warn("  |- '{}:{}'", firstHit, version);
                             writeFirstHit = false;
                         }
-                        logger.error("  |- '{}:{}'", id, info.getVersion());
+                        logger.warn("  |- '{}:{}'", id, info.getVersion());
                     }
                 }
             }
         }
-        if (writeFirstHit) {
-            logger.warn("No problems found");
-        }
+    }
+
+    @Override
+    public String toString() {
+        return "SameVersionGroupRule [inputPattern=" + inputPattern + "]";
     }
 
 //    private static String createRegexFromGlob(String glob) {
@@ -68,4 +73,6 @@ public class SameVersionGroupRule implements VersionRule {
 //        }
 //        return out;
 //    }
+
+
 }

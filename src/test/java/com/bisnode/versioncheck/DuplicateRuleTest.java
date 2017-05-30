@@ -3,9 +3,11 @@ package com.bisnode.versioncheck;
 import java.util.Arrays;
 import java.util.List;
 
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.bisnode.versioncheck.rules.DuplicateRule;
 
@@ -21,6 +23,8 @@ public class DuplicateRuleTest {
                 );
 
         DuplicateRule rule = new DuplicateRule();
-        rule.apply(deps);
+        Configuration config = Mockito.mock(Configuration.class);
+        Mockito.when(config.getName()).thenReturn("myConfigName");
+        rule.apply(config, deps);
     }
 }

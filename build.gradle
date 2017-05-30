@@ -25,6 +25,7 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
 }
 
 task wrapper(type: Wrapper) {
