@@ -1,3 +1,6 @@
+plugins {
+  id "com.gradle.plugin-publish" version "0.9.7"
+}
 
 apply plugin: 'maven'
 apply plugin: 'signing'
@@ -7,7 +10,6 @@ repositories {
 }
 
 group = 'com.bisnode'
-version = '1.0.0-SNAPSHOT'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -27,4 +29,20 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = "3.5"
+}
+
+// The configuration example below shows the minimum required properties
+// configured to publish your plugin to the plugin portal
+pluginBundle {
+  website = 'http://www.bisnode.com/'
+  vcsUrl = 'https://github.com/gradle/gradle'
+  description = 'Check your project dependencies for incompatible versions'
+  tags = ['version', 'check', 'dependencies']
+
+  plugins {
+    greetingsPlugin {
+      id = 'com.bisnode.version-check'
+      displayName = 'Gradle VersionCheck plugin'
+    }
+  }
 }

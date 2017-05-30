@@ -15,7 +15,7 @@ public class VersionCheckPluginTest {
         Project project = ProjectBuilder.builder().build();
 
         project.getPluginManager().apply("java");
-        project.getPluginManager().apply("com.bisnode.versionCheck");
+        project.getPluginManager().apply("com.bisnode.version-check");
         project.getRepositories().mavenCentral();
 
         project.getDependencies().add("compile", new DefaultExternalModuleDependency("org.springframework.boot", "spring-boot-starter", "1.5.1.RELEASE"));
