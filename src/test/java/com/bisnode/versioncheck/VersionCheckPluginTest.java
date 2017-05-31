@@ -30,6 +30,7 @@ public class VersionCheckPluginTest {
         extension.getVersionRules().add(new SameVersionGroupRule("org.springframework.boot"));
 
         ValidationTask validateTask = (ValidationTask) project.getTasksByName("versionCheck", false).iterator().next();
+
         validateTask.execute();
     }
 }
