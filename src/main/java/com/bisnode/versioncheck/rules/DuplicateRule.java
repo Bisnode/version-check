@@ -12,6 +12,8 @@ import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
+import com.bisnode.versioncheck.ValidationReportRenderer;
+
 /**
  * Checks whether a dependency exists more than once with different versions.
  */
@@ -20,7 +22,7 @@ public class DuplicateRule implements VersionRule {
     private static final Logger logger = Logging.getLogger(DuplicateRule.class);
 
     @Override
-    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps) {
+    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps, ValidationReportRenderer renderer) {
         Map<String, Set<String>> versionGroup = new HashMap<>();
 
         for (ModuleVersionIdentifier info : allDeps) {

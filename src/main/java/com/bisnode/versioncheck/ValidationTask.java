@@ -24,12 +24,12 @@
 
 package com.bisnode.versioncheck;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -42,14 +42,15 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.diagnostics.AbstractReportTask;
+import org.gradle.api.tasks.diagnostics.internal.ReportRenderer;
 
 import com.bisnode.versioncheck.rules.VersionRule;
 
 /**
  * Validates the project dependencies against the defined ruleset.
  */
-public class ValidationTask extends DefaultTask {
+public class ValidationTask extends AbstractReportTask {
 
     private static final Logger logger = Logging.getLogger(ValidationTask.class);
 
@@ -66,21 +67,28 @@ public class ValidationTask extends DefaultTask {
 
     private final VersionCheckExtension extension = (VersionCheckExtension) getProject().getExtensions().getByName("versionCheck");
 
+    private ValidationReportRenderer renderer = new ValidationReportRenderer();
 
-    @TaskAction
-    public void validate() {
+    @Override
+    protected ReportRenderer getRenderer() {
+        return renderer;
+    }
 
-        // determine projects for which to include dependencies
-        Set<Project> depProjects = determineProjects();
+    /**
+     * @param renderer the renderer to use to build a report. If unset, ValidationReportRenderer will be used.
+     */
+    public void setRenderer(ValidationReportRenderer renderer) {
+        this.renderer = renderer;
+    }
 
-        for (Project depProject : depProjects) {
-            logger.lifecycle("Project " + depProject);
 
-            for (Configuration config : getAcceptedConfigurations(depProject)) {
-                logger.lifecycle("+ Configuration: " + config.getName());
-                List<ModuleVersionIdentifier> dependencies = getDependencies(config.getResolvedConfiguration());
-                applyChecks(config, dependencies);
-            }
+    @Override
+    protected void generate(Project project) throws IOException {
+
+        for (Configuration configuration : getAcceptedConfigurations(project)) {
+            renderer.startConfiguration(configuration);
+            applyChecks(configuration);
+            renderer.completeConfiguration(configuration);
         }
 
         // project plugins
@@ -96,9 +104,11 @@ public class ValidationTask extends DefaultTask {
 //
     }
 
-    private void applyChecks(Configuration config, List<ModuleVersionIdentifier> allDeps) {
+    private void applyChecks(Configuration config) {
+        List<ModuleVersionIdentifier> dependencies = getDependencies(config.getResolvedConfiguration());
+
         for (VersionRule rule : extension.getVersionRules()) {
-            rule.apply(config, allDeps);
+            rule.apply(config, dependencies, renderer);
         }
     }
 
@@ -116,17 +126,6 @@ public class ValidationTask extends DefaultTask {
             }
         }
         return results;
-    }
-
-    private Set<Project> determineProjects() {
-        Project project = getProject();
-        if (extension.isIncludeSubProjects()) {
-            // project and sub-projects
-            return project.getAllprojects();
-        } else {
-            // only the main project
-            return Collections.singleton(project);
-        }
     }
 
     private List<ModuleVersionIdentifier> getDependencies(ResolvedConfiguration resolvedConfig) {
@@ -163,5 +162,4 @@ public class ValidationTask extends DefaultTask {
         }
         return dependencyList;
     }
-
 }

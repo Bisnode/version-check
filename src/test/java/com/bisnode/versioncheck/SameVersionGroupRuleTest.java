@@ -25,6 +25,8 @@ public class SameVersionGroupRuleTest {
         Configuration config = Mockito.mock(Configuration.class);
         Mockito.when(config.getName()).thenReturn("myConfigName");
 
-        rule.apply(config, deps);
+        ValidationReportRenderer renderer = Mockito.mock(ValidationReportRenderer.class);
+
+        rule.apply(config, deps, renderer);
     }
 }

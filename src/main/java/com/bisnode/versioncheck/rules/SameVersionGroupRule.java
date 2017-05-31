@@ -5,16 +5,13 @@ import java.util.regex.Pattern;
 
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
-import org.gradle.api.artifacts.ResolvedConfiguration;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
+
+import com.bisnode.versioncheck.ValidationReportRenderer;
 
 /**
  * Checks that a group of modules have the same version
  */
 public class SameVersionGroupRule implements VersionRule {
-
-    private static final Logger logger = Logging.getLogger(SameVersionGroupRule.class);
 
     private Pattern matchPattern;
     private String inputPattern;
@@ -29,9 +26,9 @@ public class SameVersionGroupRule implements VersionRule {
     }
 
     @Override
-    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps) {
+    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps, ValidationReportRenderer renderer) {
         String version = null;
-        String firstHit = null;
+        String firstName = null;
         boolean writeFirstHit = true;
 
         for (ModuleVersionIdentifier info : allDeps) {
@@ -39,19 +36,21 @@ public class SameVersionGroupRule implements VersionRule {
             if (matchPattern.matcher(id).matches()) {
                 if (version == null) {
                     version = info.getVersion();
-                    firstHit = id;
+                    firstName = info.getName();
                 } else {
                     if (!version.equals(info.getVersion())) {
                         if (writeFirstHit) {
-                            logger.warn("Version group mismatch for '{}'", inputPattern);
-                            logger.warn("  |- '{}:{}'", firstHit, version);
+                            renderer.startViolationGroup("Version group mismatch for '" + inputPattern + "'");
+                            renderer.reportViolation("%s for %s", version, firstName);
                             writeFirstHit = false;
                         }
-                        logger.warn("  |- '{}:{}'", id, info.getVersion());
+                        renderer.reportViolation("%s for %s", info.getVersion(), info.getName());
                     }
                 }
             }
         }
+
+        renderer.completeViolationGroup();
     }
 
     @Override
