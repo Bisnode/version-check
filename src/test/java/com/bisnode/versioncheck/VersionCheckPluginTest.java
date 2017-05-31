@@ -1,9 +1,13 @@
 package com.bisnode.versioncheck;
 
+import static org.mockito.Mockito.*;
+
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.bisnode.versioncheck.rules.DuplicateRule;
 import com.bisnode.versioncheck.rules.SameVersionGroupRule;
@@ -31,6 +35,23 @@ public class VersionCheckPluginTest {
 
         ValidationTask validateTask = (ValidationTask) project.getTasksByName("versionCheck", false).iterator().next();
 
+        ValidationReportRenderer mockRenderer = mock(ValidationReportRenderer.class);
+        validateTask.setRenderer(mockRenderer);
+
         validateTask.execute();
+
+        verify(mockRenderer).startProject(project);
+        verify(mockRenderer).completeProject(project);
+
+        Configuration configuration = project.getConfigurations().findByName("testCompile");
+
+        verify(mockRenderer).startConfiguration(configuration);
+        verify(mockRenderer).completeConfiguration(configuration);
+
+        verify(mockRenderer).startViolationGroup(any());
+        verify(mockRenderer).completeViolationGroup();
+
+        verify(mockRenderer, times(4)).reportViolation(any(), anyVararg());
+
     }
 }
