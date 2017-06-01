@@ -42,8 +42,8 @@ versionCheck {
 
 There are two main modes, you can use only the **declared** dependencies or additionally the **transitive** dependencies:
 
-* **declared** - only first level dependencies are included (default)
-* **transitive** - the declared and all transitive dependencies
+* **declared** - only first level dependencies are included
+* **transitive** - the declared and all transitive dependencies (default)
 
 Configuration example:
 

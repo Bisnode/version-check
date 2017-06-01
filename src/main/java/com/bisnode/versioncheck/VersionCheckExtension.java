@@ -13,13 +13,13 @@ import com.bisnode.versioncheck.rules.VersionRule;
 public class VersionCheckExtension {
 
     // dependencies values
-    public static final String transitive = "transitive";
-    public static final String declared = "declared";
+    public static final String TRANSITIVE = "transitive";
+    public static final String DECLARED = "declared";
 
     /**
      * States which dependencies are analyzed - only the defined or all resolved dependencies.
      */
-    private String dependencies = declared;
+    private String dependencies = TRANSITIVE;
 
     private Project project;
 

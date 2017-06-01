@@ -32,13 +32,13 @@ public class DependencyUtils {
 
         VersionCheckExtension versioncheckExt = (VersionCheckExtension) project.getExtensions().getByName("versionCheck");
 
-        if (VersionCheckExtension.transitive.equals(versioncheckExt.getDependencies())) {
+        if (VersionCheckExtension.TRANSITIVE.equals(versioncheckExt.getDependencies())) {
             // transitive dependencies: use all resolved artifacts
 
             // retrieve all external dependencies
             // XXX we are ignoring the dependency relations here - does it matter for VersionCheck?
             deps = resolvedConfig.getLenientConfiguration().getArtifacts(DependencyUtils.EXTERNAL_DEPENDENCY);
-        } else if (VersionCheckExtension.declared.equals(versioncheckExt.getDependencies())) {
+        } else if (VersionCheckExtension.DECLARED.equals(versioncheckExt.getDependencies())) {
             // declared dependencies: only use first level dependencies
             deps = resolvedConfig.getLenientConfiguration().getFirstLevelModuleDependencies(DependencyUtils.EXTERNAL_DEPENDENCY);
         } else {
