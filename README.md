@@ -12,16 +12,17 @@ The simplest way to apply the plugin to your Gradle build is to use the plugin m
 
 ```groovy
 plugins {
-    id "com.bisnode.versioncheck" version "1.0.0"
+    id "com.bisnode.versioncheck" version "<version>"
 }
 ```
 
 
 ### Gradle tasks
 
-The plugin comes with one main Gradle tasks:
+The plugin comes with two tasks:
 
-***versionCheck*** - Run the version checks against the project
+***versionCheck*** - Run the version checks against the project. The build fails, if violations are found.
+***versionCheckReport*** - Create a report of the checks for all projects and configrations.
 
 #### Rules
 
@@ -44,8 +45,8 @@ There are two main modes, you can use only the **declared** dependencies or addi
 * **transitive** - the declared and all transitive dependencies
 
 Configuration example:
-```groovy
 
+```groovy
 versionCheck {
     dependencies = 'transitive'
 }
@@ -54,10 +55,10 @@ versionCheck {
 #### Configurations
 
 To further customize which dependencies are analyzed, you can specify configurations, for example to include the dependencies that are only needed for tests with the Java plugin:
-```groovy
 
+```groovy
 versionCheck {
-    configurations 'testCompile'
+    configurations 'testRuntime'  // this is the default
 }
 ```
 
@@ -66,7 +67,7 @@ versionCheck {
 
 ##### Multi-project builds
 
-If you have a multi-build project that you want to handle as one single VersionEye project, you should apply the plugin only to the root project and configure the plugin to include dependencies from sub-projects as well:
+If you have a multi-build project that you want to treat  as one single project, you should apply the plugin only to the root project and configure the plugin to include dependencies from sub-projects as well:
 
 ```groovy
 versionCheck {
@@ -78,4 +79,4 @@ versionCheck {
 License
 -----
 
-to be decided
+The MIT license (see the LICENSE file)
