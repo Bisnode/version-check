@@ -12,7 +12,7 @@ import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
-import com.bisnode.versioncheck.ValidationReportRenderer;
+import com.bisnode.versioncheck.listener.VersionCheckListener;
 
 /**
  * Checks whether a dependency exists more than once with different versions.
@@ -22,7 +22,7 @@ public class DuplicateRule implements VersionRule {
     private static final Logger logger = Logging.getLogger(DuplicateRule.class);
 
     @Override
-    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps, ValidationReportRenderer renderer) {
+    public boolean apply(Configuration config, List<ModuleVersionIdentifier> allDeps, VersionCheckListener renderer) {
         Map<String, Set<String>> versionGroup = new HashMap<>();
 
         for (ModuleVersionIdentifier info : allDeps) {
@@ -35,10 +35,14 @@ public class DuplicateRule implements VersionRule {
             version.add(info.getVersion());
         }
 
+        boolean allOk = true;
         for (Entry<String, Set<String>> entry : versionGroup.entrySet()) {
             if (entry.getValue().size() > 1) {
+                allOk = false;
                 logger.warn("Version mismatch for '{}' - Conflicting versions: {}", entry.getKey(), entry.getValue());
             }
         }
+
+        return allOk;
     }
 }

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 
-import com.bisnode.versioncheck.ValidationReportRenderer;
+import com.bisnode.versioncheck.listener.VersionCheckListener;
 
 /**
  * Checks that a group of modules have the same version
@@ -26,10 +26,10 @@ public class SameVersionGroupRule implements VersionRule {
     }
 
     @Override
-    public void apply(Configuration config, List<ModuleVersionIdentifier> allDeps, ValidationReportRenderer renderer) {
+    public boolean apply(Configuration config, List<ModuleVersionIdentifier> allDeps, VersionCheckListener renderer) {
         String version = null;
         String firstName = null;
-        boolean writeFirstHit = true;
+        boolean allOk = true;
 
         for (ModuleVersionIdentifier info : allDeps) {
             String id = info.getGroup() + ":" + info.getName();
@@ -39,18 +39,22 @@ public class SameVersionGroupRule implements VersionRule {
                     firstName = info.getName();
                 } else {
                     if (!version.equals(info.getVersion())) {
-                        if (writeFirstHit) {
-                            renderer.startViolationGroup("Version group mismatch for '" + inputPattern + "'");
-                            renderer.reportViolation("%s for %s", version, firstName);
-                            writeFirstHit = false;
+                        if (allOk) {
+                            renderer.startViolationGroup(inputPattern);
+                            renderer.reportViolation("Version %s for %s", version, firstName);
+                            allOk = false;
                         }
-                        renderer.reportViolation("%s for %s", info.getVersion(), info.getName());
+                        renderer.reportViolation("Version %s for %s", info.getVersion(), info.getName());
                     }
                 }
             }
         }
 
-        renderer.completeViolationGroup();
+        if (!allOk) {
+            renderer.completeViolationGroup();
+        }
+
+        return allOk;
     }
 
     @Override

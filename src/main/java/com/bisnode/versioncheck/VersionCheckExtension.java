@@ -24,9 +24,9 @@ public class VersionCheckExtension {
     private Project project;
 
     /**
-     * Configuration to exclude when calculating the dependencies.
+     * Configuration to include when calculating the dependencies.
      */
-    private final Set<String> configurations = new HashSet<String>();
+    private final Set<String> configurations;
 
     private final Set<VersionRule> versionRules = new HashSet<VersionRule>();
 
@@ -36,6 +36,8 @@ public class VersionCheckExtension {
     private boolean includeSubProjects = false;
 
     public VersionCheckExtension(Project project) {
+        this.configurations = new HashSet<>();
+        this.configurations.add("testCompile");
         this.project = project;
       }
 

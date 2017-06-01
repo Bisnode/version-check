@@ -5,10 +5,10 @@ import java.util.List;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 
-import com.bisnode.versioncheck.ValidationReportRenderer;
+import com.bisnode.versioncheck.listener.VersionCheckListener;
 
 public interface VersionRule {
 
-    void apply(Configuration config, List<ModuleVersionIdentifier> deps, ValidationReportRenderer renderer);
+    boolean apply(Configuration config, List<ModuleVersionIdentifier> deps, VersionCheckListener renderer);
 
 }

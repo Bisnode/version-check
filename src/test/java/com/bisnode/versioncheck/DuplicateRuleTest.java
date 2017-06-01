@@ -9,6 +9,8 @@ import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.bisnode.versioncheck.listener.VersionCheckListener;
+import com.bisnode.versioncheck.listener.VersionCheckReportRenderer;
 import com.bisnode.versioncheck.rules.DuplicateRule;
 
 public class DuplicateRuleTest {
@@ -26,7 +28,7 @@ public class DuplicateRuleTest {
         Configuration config = Mockito.mock(Configuration.class);
         Mockito.when(config.getName()).thenReturn("myConfigName");
 
-        ValidationReportRenderer renderer = Mockito.mock(ValidationReportRenderer.class);
+        VersionCheckListener renderer = Mockito.mock(VersionCheckReportRenderer.class);
 
         rule.apply(config, deps, renderer);
     }

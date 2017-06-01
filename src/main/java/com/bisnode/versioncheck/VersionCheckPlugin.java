@@ -23,12 +23,24 @@ public class VersionCheckPlugin implements Plugin<Project> {
         }
 
         project.getExtensions().create("versionCheck", VersionCheckExtension.class, project);
+        project.task(createCheckTask(), "versionCheck");
+        project.task(createReportTask(), "versionCheckReport");
+    }
 
+    private Map<String, ?> createCheckTask() {
         Map<String, Object> args = new HashMap<>();
-        args.put(Task.TASK_TYPE, ValidationTask.class);
+        args.put(Task.TASK_TYPE, VersionCheckTask.class);
         args.put(Task.TASK_GROUP, "VersionCheck");
         args.put(Task.TASK_DESCRIPTION, "Applies the configured version checks to validate the dependency sets");
-        project.task(args, "versionCheck");
+        return args;
+    }
+
+    private Map<String, ?> createReportTask() {
+        Map<String, Object> args = new HashMap<>();
+        args.put(Task.TASK_TYPE, VersionCheckReportTask.class);
+        args.put(Task.TASK_GROUP, "VersionCheck");
+        args.put(Task.TASK_DESCRIPTION, "Creates a report of the version checks for all configurations");
+        return args;
     }
 }
 

@@ -1,14 +1,18 @@
 package com.bisnode.versioncheck;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Test;
-import org.mockito.Mockito;
 
+import com.bisnode.versioncheck.listener.VersionCheckReportRenderer;
 import com.bisnode.versioncheck.rules.DuplicateRule;
 import com.bisnode.versioncheck.rules.SameVersionGroupRule;
 
@@ -33,9 +37,9 @@ public class VersionCheckPluginTest {
         extension.getVersionRules().add(new DuplicateRule());
         extension.getVersionRules().add(new SameVersionGroupRule("org.springframework.boot"));
 
-        ValidationTask validateTask = (ValidationTask) project.getTasksByName("versionCheck", false).iterator().next();
+        VersionCheckReportTask validateTask = (VersionCheckReportTask) project.getTasksByName("versionCheckReport", false).iterator().next();
 
-        ValidationReportRenderer mockRenderer = mock(ValidationReportRenderer.class);
+        VersionCheckReportRenderer mockRenderer = mock(VersionCheckReportRenderer.class);
         validateTask.setRenderer(mockRenderer);
 
         validateTask.execute();
@@ -48,10 +52,10 @@ public class VersionCheckPluginTest {
         verify(mockRenderer).startConfiguration(configuration);
         verify(mockRenderer).completeConfiguration(configuration);
 
-        verify(mockRenderer).startViolationGroup(any());
-        verify(mockRenderer).completeViolationGroup();
+        verify(mockRenderer, atLeast(1)).startViolationGroup(any());
+        verify(mockRenderer, atLeast(1)).completeViolationGroup();
 
-        verify(mockRenderer, times(4)).reportViolation(any(), anyVararg());
+        verify(mockRenderer, atLeast(1)).reportViolation(any(), anyVararg());
 
     }
 }

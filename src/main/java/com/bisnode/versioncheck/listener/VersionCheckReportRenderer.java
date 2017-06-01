@@ -1,5 +1,5 @@
 
-package com.bisnode.versioncheck;
+package com.bisnode.versioncheck.listener;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -9,7 +9,7 @@ import org.gradle.internal.logging.text.StyledTextOutput.Style;
 /**
  * Render the rule violation of a project report.
  */
-public class ValidationReportRenderer extends TextReportRenderer {
+public class VersionCheckReportRenderer extends TextReportRenderer implements VersionCheckListener {
 
     private boolean isEmpty;
 
@@ -19,11 +19,13 @@ public class ValidationReportRenderer extends TextReportRenderer {
         return "All validation results from " + header;
     }
 
+    @Override
     public void startConfiguration(Configuration configuration) {
         getBuilder().subheading("Configuration: " + configuration.getName());
         isEmpty = true;
     }
 
+    @Override
     public void completeConfiguration(Configuration configuration) {
         if (isEmpty) {
             getTextOutput().withStyle(Style.Info).println("No violations detected");
@@ -31,17 +33,21 @@ public class ValidationReportRenderer extends TextReportRenderer {
         }
     }
 
+    @Override
     public void startViolationGroup(String group) {
-        getTextOutput().append(" o ").withStyle(Style.Error).append(group);
+        CharSequence text = "Version group mismatch for '" + group + "'";
+        getTextOutput().append(" o ").withStyle(Style.Error).append(text);
         getTextOutput().println();
         isEmpty = false;
     }
 
+    @Override
     public void reportViolation(String formatText, Object... parameters) {
         getTextOutput().append(" |-- ").withStyle(Style.Identifier).format(formatText,  parameters);
         getTextOutput().println();
     }
 
+    @Override
     public void completeViolationGroup() {
         if (!isEmpty) {
             getTextOutput().println();
