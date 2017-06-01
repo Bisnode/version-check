@@ -21,13 +21,13 @@ plugins {
 
 The plugin comes with two tasks:
 
-***versionCheck*** - Run the version checks against the project. The build fails, if violations are found.
+* **versionCheck** - Run the version checks against the project. The build fails, if violations are found.
 
-***versionCheckReport*** - Create a report of the checks for all projects and configrations.
+* **versionCheckReport** - Create a report of the checks for all projects and configrations.
 
-#### Rules
+### Rules
 
-##### Check for identical versions:
+#### Check for identical versions:
 
 Specify the set of modules that should have the same version
 
@@ -38,7 +38,7 @@ versionCheck {
 ```
 
 
-#### Which dependencies?
+### Which dependencies?
 
 There are two main modes, you can use only the **declared** dependencies or additionally the **transitive** dependencies:
 
@@ -53,7 +53,7 @@ versionCheck {
 }
 ```
 
-#### Configurations
+### Configurations
 
 To further customize which dependencies are analyzed, you can specify configurations, for example to include the dependencies that are only needed for tests with the Java plugin:
 
@@ -66,7 +66,7 @@ versionCheck {
 **Tip:** If there are dependencies showing up you have no idea where they are coming from, use `gradle dependencies` to get an overview of all configurations and the dependencies contained in them. Use it to identifiy the configurations that you want to include.
 
 
-##### Multi-project builds
+### Multi-project builds
 
 If you have a multi-build project that you want to treat  as one single project, you should apply the plugin only to the root project and configure the plugin to include dependencies from sub-projects as well:
 
