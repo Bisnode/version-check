@@ -22,6 +22,7 @@ plugins {
 The plugin comes with two tasks:
 
 ***versionCheck*** - Run the version checks against the project. The build fails, if violations are found.
+
 ***versionCheckReport*** - Create a report of the checks for all projects and configrations.
 
 #### Rules
