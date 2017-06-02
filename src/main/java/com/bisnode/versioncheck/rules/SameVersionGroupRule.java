@@ -23,7 +23,7 @@ public class SameVersionGroupRule implements VersionRule {
         this.inputPattern = id;
         // check if a string matches with the specified pattern exactly
         // TODO: consider evaluating wildcards or even globs
-        this.matchPattern = Pattern.compile(Pattern.quote(inputPattern));
+        this.matchPattern = Pattern.compile(Pattern.quote(inputPattern) + ":" + ".*");
     }
 
     @Override
