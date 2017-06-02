@@ -28,7 +28,7 @@ public class VersionCheckErrorListener implements VersionCheckListener {
     @Override
     public void startViolationGroup(String group) {
         this.currentGroup = group;
-        logger.error("Violation for configuration: '{}', group: '{}'", currentConfig, currentGroup);
+        logger.error("Violation for configuration: '{}', group: '{}'", currentConfig.getName(), currentGroup);
     }
 
     @Override
