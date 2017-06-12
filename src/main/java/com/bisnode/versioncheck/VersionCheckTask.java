@@ -57,7 +57,7 @@ public class VersionCheckTask extends DefaultTask {
         List<ModuleVersionIdentifier> dependencies = DependencyUtils.getDependencies(getProject(), config.getResolvedConfiguration());
 
         for (VersionRule rule : extension.getVersionRules()) {
-            if (!rule.apply(config, dependencies, listener)) {
+            if (!rule.apply(dependencies, listener)) {
                 throw new GradleException("Rule violation detected");
             }
         }

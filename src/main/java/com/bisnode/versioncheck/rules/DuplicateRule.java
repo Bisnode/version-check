@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
@@ -22,7 +21,7 @@ public class DuplicateRule implements VersionRule {
     private static final Logger logger = Logging.getLogger(DuplicateRule.class);
 
     @Override
-    public boolean apply(Configuration config, List<ModuleVersionIdentifier> allDeps, VersionCheckListener renderer) {
+    public boolean apply(List<ModuleVersionIdentifier> allDeps, VersionCheckListener renderer) {
         Map<String, Set<String>> versionGroup = new HashMap<>();
 
         for (ModuleVersionIdentifier info : allDeps) {

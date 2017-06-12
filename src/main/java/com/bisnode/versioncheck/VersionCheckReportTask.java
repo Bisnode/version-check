@@ -51,7 +51,7 @@ public class VersionCheckReportTask extends AbstractReportTask {
         List<ModuleVersionIdentifier> dependencies = DependencyUtils.getDependencies(getProject(), config.getResolvedConfiguration());
 
         for (VersionRule rule : extension.getVersionRules()) {
-            rule.apply(config, dependencies, renderer);
+            rule.apply(dependencies, renderer);
         }
     }
 

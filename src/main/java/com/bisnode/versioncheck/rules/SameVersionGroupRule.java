@@ -3,7 +3,6 @@ package com.bisnode.versioncheck.rules;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 
 import com.bisnode.versioncheck.listener.VersionCheckListener;
@@ -27,7 +26,7 @@ public class SameVersionGroupRule implements VersionRule {
     }
 
     @Override
-    public boolean apply(Configuration config, List<ModuleVersionIdentifier> allDeps, VersionCheckListener renderer) {
+    public boolean apply(List<ModuleVersionIdentifier> allDeps, VersionCheckListener renderer) {
         String version = null;
         String firstName = null;
         boolean allOk = true;

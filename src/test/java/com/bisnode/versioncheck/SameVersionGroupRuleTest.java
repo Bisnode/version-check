@@ -3,7 +3,6 @@ package com.bisnode.versioncheck;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier;
 import org.junit.Test;
@@ -16,7 +15,7 @@ import com.bisnode.versioncheck.rules.SameVersionGroupRule;
 public class SameVersionGroupRuleTest {
 
     @Test
-    public void check() {
+    public void checkSingleConflict() {
         List<ModuleVersionIdentifier> deps = Arrays.asList(
                 new DefaultModuleVersionIdentifier("org.springframework.boot", "spring-boot-starter-test", "1.4.1"),
                 new DefaultModuleVersionIdentifier("org.springframework.boot", "spring-boot", "1.5.1"),
@@ -24,11 +23,14 @@ public class SameVersionGroupRuleTest {
                 );
 
         SameVersionGroupRule rule = new SameVersionGroupRule("org.springframework.boot");
-        Configuration config = Mockito.mock(Configuration.class);
-        Mockito.when(config.getName()).thenReturn("myConfigName");
 
-        VersionCheckListener renderer = Mockito.mock(VersionCheckReportRenderer.class);
+        VersionCheckListener mockRenderer = Mockito.mock(VersionCheckReportRenderer.class);
 
-        rule.apply(config, deps, renderer);
+        rule.apply(deps, mockRenderer);
+
+        verify(mockRenderer).startViolationGroup("org.springframework.boot");
+        verify(mockRenderer).completeViolationGroup();
+
+        verify(mockRenderer, times(2)).reportViolation(any(), anyVararg());
     }
 }
