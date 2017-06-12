@@ -21,8 +21,7 @@ public class SameVersionGroupRule implements VersionRule {
     public SameVersionGroupRule(String id) {
         this.inputPattern = id;
         // check if a string matches with the specified pattern exactly
-        // TODO: consider evaluating wildcards or even globs
-        this.matchPattern = Pattern.compile(Pattern.quote(inputPattern) + ":" + ".*");
+        this.matchPattern = Pattern.compile(createRegexFromGlob(inputPattern));
     }
 
     @Override
@@ -32,8 +31,7 @@ public class SameVersionGroupRule implements VersionRule {
         boolean allOk = true;
 
         for (ModuleVersionIdentifier info : allDeps) {
-            String id = info.getGroup() + ":" + info.getName();
-            if (matchPattern.matcher(id).matches()) {
+            if (matchPattern.matcher(info.getGroup()).matches()) {
                 if (version == null) {
                     version = info.getVersion();
                     firstName = info.getName();
@@ -62,4 +60,27 @@ public class SameVersionGroupRule implements VersionRule {
         return "SameVersionGroupRule [inputPattern=" + inputPattern + "]";
     }
 
+    static String createRegexFromGlob(String glob) {
+        String out = "";
+        for (int i = 0; i < glob.length(); i++) {
+            final char c = glob.charAt(i);
+            switch (c) {
+            case '*':
+                out += ".*?";
+                break;
+            case '?':
+                out += '.';
+                break;
+            case '.':
+                out += "\\.";
+                break;
+            case '\\':
+                out += "\\\\";
+                break;
+            default:
+                out += c;
+            }
+        }
+        return out;
+    }
 }

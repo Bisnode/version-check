@@ -33,9 +33,11 @@ Specify the set of modules that should have the same version
 
 ```groovy
 versionCheck {
-    sameVersionGroups = [ "org.springframework.boot" ]
+    sameVersionGroups = [ "org.springframework", "org.springframework.boot", "com.fasterxml.jackson.*" ]
 }
 ```
+
+The groups are groups in the sense of Maven artifact group IDs. Wildcards ("*") and placeholders ("?") are supported.
 
 
 ### Which dependencies?
