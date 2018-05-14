@@ -1,5 +1,5 @@
 plugins {
-  id "com.gradle.plugin-publish" version "0.9.7"
+  id "com.gradle.plugin-publish" version "0.9.10"
 }
 
 apply plugin: 'eclipse'
@@ -28,7 +28,7 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "3.5"
+    gradleVersion = "4.7"
 }
 
 // The configuration example below shows the minimum required properties
